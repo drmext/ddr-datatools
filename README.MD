@@ -15,9 +15,9 @@
 - https://download.imagemagick.org/ImageMagick/download/binaries/ImageMagick-7.1.0-portable-Q16-x64.zip
 - https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-gpl-5.0.zip
 
-5. `pip install lxml typing_extensions`
+5. `pip install lxml typing-extensions`
 
-6. Copy ontents\data\arc\\`startup.arc` and contents\data\arc\thumbnail\\`jacket_thumbnails_ja_8.arc` to here
+6. Copy contents\data\arc\\`startup.arc` and contents\data\arc\thumbnail\\`jacket_thumbnails_ja_8.arc` to here
 
 7. Run `python3 ddromni.py`
 
@@ -27,10 +27,8 @@
 
 ## Note:
 - this is quickly thrown together and not done in an ideal way; please expand on it or get use out of it as is (I just add a few songs such as sode and cart, but 95 out of 454 will be used from packages if you leave all 454 in the folder. this shouldn't hit any buffer limits on A20+)
-- artist name is set to OMNIMIX for all added songs because artists are not in the  Extreme package.json
+- artist name is set to OMNIMIX for all added songs because artists are not in the Extreme package.json
 - background stage is set to 3 for all added songs
-- ffmpeg audio rendering offset is tweaked for Extreme. `-ss 0.0507` will need to be something else for other games
-- do not use this on a network as the generated mcode IDs will not be unique
 - the diff levels may not be accurate (old_diff \* 1.5 rounded down)
 - jacket aspect ratios are messed up
 - most preview volume is deep fried (tried to match original preview levels)

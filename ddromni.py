@@ -8,20 +8,6 @@ import math
 import lxml.etree as ET
 from lxml.builder import E
 
-#### hashing the mcode resulted in collisions
-####
-#
-# def crc16_arc(data):
-#     crc = 0x0000
-#     for i in (range(0, len(data))):
-#         crc ^= data[i]
-#         for j in range(0, 8):
-#             if (crc & 0x0001) > 0:
-#                 crc = (crc >> 1) ^ 0xA001
-#             else:
-#                 crc = crc >> 1
-#     return crc     
-
 required = [
     'ffmpeg.exe',
     'magick.exe',
@@ -64,14 +50,13 @@ for music in mdb:
 
 
 skipped = []
-mcode = 79999
 for packages in Path('packages').glob('*'):
     basename = packages.name
     info = Path(packages, 'package.json')
     with open(info) as package_json:
         json_data = json.load(package_json)
     # excess example for what must be accounted for when expanding to packages other than Extreme, as the formats vary:
-    if basename not in existing and json_data.get('_origin') == 'extreme' and Path(packages, f'{basename}_th.png').exists() and Path(packages, f'{basename}_bk.png').exists() and Path(packages, 'song.mp3').exists() and Path(packages, 'preview.mp3').exists() and Path(packages, 'all.csq').exists():
+    if basename not in existing and json_data.get('_origin') in ('max', 'max2', 'extreme') and Path(packages, f'{basename}_th.png').exists() and Path(packages, f'{basename}_bk.png').exists() and Path(packages, 'song.mp3').exists() and Path(packages, 'preview.mp3').exists() and Path(packages, 'all.csq').exists():
         thumb_input = Path(packages, f'{basename}_th.png')
         jacket_input = Path(packages, f'{basename}_bk.png')
         song_input = Path(packages, 'song.mp3')
@@ -91,8 +76,14 @@ for packages in Path('packages').glob('*'):
         subprocess.run(f'magick.exe convert {thumb_input} -background black -gravity center -resize 192x192! -extent 192x192 -flatten {thumb_output}')
         subprocess.run(f'magick.exe convert {jacket_input} -background black -gravity center -resize 512x512! -extent 512x512 -flatten {jacket_output}')
 
-        subprocess.run(f'ffmpeg -ss 0.0507 -i {song_input} -af "apad=pad_dur=1" {song_output} -loglevel error')
-        subprocess.run(f'ffmpeg -i {prev_input} -af "volume=6dB" {prev_output} -loglevel error')
+        if json_data.get('_origin') == 'extreme':
+            offset = '0.0507'
+            volume = '3'
+        else:
+            offset = '0.0235'
+            volume = '0'
+        subprocess.run(f'ffmpeg -ss {offset} -i {song_input} -af "apad=pad_dur=1" {song_output} -loglevel error')
+        subprocess.run(f'ffmpeg -i {prev_input} -af "volume={volume}dB" {prev_output} -loglevel error')
 
         copyfile(csq, ssq)
 
@@ -156,10 +147,14 @@ for packages in Path('packages').glob('*'):
 
         diff_level = [0, SPL, SPS, SPH, SPO, 0, DPL, DPS, DPH, DPO]
 
-#        mcode = int(crc16_arc(str.encode(basename)))
-        mcode += 1
+        mcode = json_data['memory_card_link_id']
         bgstage = 3
-        series = 8
+        if json_data.get('_origin') == 'max':
+            series = 6
+        elif json_data.get('_origin') == 'max2':
+            series = 7
+        elif json_data.get('_origin') == 'extreme':
+            series = 8
         diff_level_str = " ".join([str(d) for d in diff_level])
 
         print('  <music>')

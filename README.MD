@@ -1,4 +1,16 @@
-# Import DDR EXTREME (system573) songs to A20+
+# Merge music databases
+`merge-mdb.py` merges two mdbs and makes a diff (with omni songs only for example)
+
+
+## USAGE:
+1. Run `arcutils_extract.py` to get `musicdb_omni.xml` and `musicdb_new.xml`
+2. Run `merge-mdb.py`
+- Uncomment lines 66-69 to add " (OmniMIX)" to artist names in the merged output
+3. Run `arcutils_create.py` to repack the output `musicdb_merged.xml` or `musicdb_diff.xml` (copy to `data\gamedata\musicdb.xml` first)
+
+
+
+# Import system573 songs to A20+ (old)
 
 
 ## USAGE:
@@ -19,14 +31,14 @@
 
 6. Copy contents\data\arc\\`startup.arc` and contents\data\arc\thumbnail\\`jacket_thumbnails_ja_8.arc` to here
 
-7. Run `python3 ddromni.py`
+7. Run `python3 573-to-a20.py`
 
 8. Copy the resulting contents\ over your original
 
 
 
 ## Note:
-- this is quickly thrown together and not done in an ideal way; please expand on it or get use out of it as is (I just add a few songs such as sode and cart, but 95 out of 454 will be used from packages if you leave all 454 in the folder. this shouldn't hit any buffer limits on A20+)
+- this is useless now
 - artist name is set to OMNIMIX for all added songs because artists are not in the Extreme package.json
 - background stage is set to 3 for all added songs
 - the diff levels may not be accurate (old_diff \* 1.5 rounded down)

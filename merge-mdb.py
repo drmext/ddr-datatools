@@ -6,16 +6,16 @@ mdb_new = ET.parse(str(Path('musicdb_new.xml')), ET.XMLParser()).getroot()
 mdb_omni = ET.parse(str(Path('musicdb_omni.xml')), ET.XMLParser()).getroot()
 
 
-existing_new = []
+existing_new = {}
 for entry in mdb_new:
-    existing_new.append(entry.find('mcode').text)
+    existing_new[entry.find('mcode').text] = entry.find('diffLv').text
 
-existing_omni =[]
+existing_omni = {}
 for entry in mdb_omni:
-    existing_omni.append(entry.find('mcode').text)
+    existing_omni[entry.find('mcode').text] = entry.find('diffLv').text
 
-omni_songs = list(set(existing_omni) - set(existing_new))
-new_songs = list(set(existing_new) - set(existing_omni))
+omni_songs = list(set(existing_omni.keys()) - set(existing_new.keys()))
+new_songs = list(set(existing_new.keys()) - set(existing_omni.keys()))
 
 
 ver = mdb_new[-1].find('series').text
@@ -32,6 +32,16 @@ if int(ver) >= 20:
 for entry in mdb_new:
     if entry.find('mcode').text in new_songs:
         mdb_omni.append(entry)
+
+# Set new difficulty changes
+for entry in mdb_omni:
+    if entry.find('mcode').text in existing_new.keys():
+        newdiff = existing_new.get(entry.find('mcode').text)
+        olddiff = existing_omni.get(entry.find('mcode').text)
+        if newdiff != olddiff:
+            for d in range(10):
+                if [int(x) for x in newdiff.split()][d] > [int(x) for x in olddiff.split()][d]:
+                    entry.find('diffLv').text = newdiff
 
 # Generate unique title_yomi omnimix values so the game sorts entries alphabetically
 alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']

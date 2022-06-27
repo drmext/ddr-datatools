@@ -35,7 +35,7 @@ for entry in mdb_new:
 
 # Set new difficulty changes
 for entry in mdb_omni:
-    if entry.find('mcode').text in existing_new.keys():
+    if entry.find('mcode').text in existing_new.keys() and entry.find('mcode').text in existing_omni.keys():
         newdiff = existing_new.get(entry.find('mcode').text)
         olddiff = existing_omni.get(entry.find('mcode').text)
         if newdiff != olddiff:

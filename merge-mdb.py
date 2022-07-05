@@ -71,7 +71,13 @@ for entry in titles_sorted:
 for entry in mdb_omni:
     k = entry.find('title').text
     if k in title_yomi.keys():
-        entry.find('title_yomi').text = title_yomi.get(k)
+        try:
+            entry.find('title_yomi').text = title_yomi.get(k)
+        except AttributeError:
+            pos = entry.find('title')
+            pos.addnext(ET.SubElement(entry, 'title_yomi'))
+            pos.tail = '\n    '
+            entry.find('title_yomi').text = title_yomi.get(k)
 
 #    if entry.find('mcode').text in omni_songs or int(entry.find('mcode').text) > 50000:
 #        artist = entry.find('artist').text

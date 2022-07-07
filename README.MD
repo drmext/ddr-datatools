@@ -1,3 +1,36 @@
+# GST and StepMania conversions
+
+`ddr-render.py` mass converts xwb and ssq files to mp3 and ogg/.sm
+
+Choose between scharfrichter (default), rhythmcodex, ddrcharttool, or none (GST only)
+
+## USAGE:
+```
+Arguments:
+'-i', '--input', help='Input folder', default="contents/data"
+'-o', '--output', help='Output folder', default="output"
+'-c', '--sm-converter', help='StepMania tool', default=None, choices=["scharfrichter", "rhythmcodex", "ddrcharttool"]
+'-s', '--series', help='Series to process (multiple ex: 19,20)', default='20'
+'-t', '--threads', help='Maximum workers for thread pool', default=10
+```
+
+External dependencies for processing GST:
+- [ffmpeg.exe](https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n5.0-latest-win64-gpl-5.0.zip)
+- [unxwb](https://aluigi.altervista.org/papers/unxwb.zip)
+
+External dependencies for also processing SM:
+- [sox](https://sourceforge.net/projects/sox/files/sox/14.4.2/sox-14.4.2-win32.zip/download)
+- [in_place.py](https://pypi.org/project/in-place/#files)
+- [romkan](https://pypi.org/project/romkan/#files)
+- [scharfrichter/BemaniToSM.exe](https://github.com/SaxxonPike/scharfrichter/releases/download/v0.0/Scharfrichter-0.0.zip) or  [rhythmcodex/RhythmCodex.Cli.exe](https://github.com/SaxxonPike/RhythmCodex) or [ddrcharttool.py](https://github.com/987123879113/gobbletools/blob/master/other/ddrcharttool.py)
+
+A mixture of tools are used:
+- three sm converter options because each have their quirks
+- unxwb because all other tools extract to normal uncompressed wav instead of the game's raw lossy ADPCM
+- sox for converting to ogg because all other tools seem to add padding which introduces an offset requirement
+- ffmpeg for mp3 tags
+- series prior to A20 are untested, but imagemagick may be required for converting old .dds jackets where RhythmCodex and Pillow break
+
 # Merge music databases
 `merge-mdb.py` merges two mdbs and makes a diff (with omni songs only for example)
 
@@ -5,7 +38,7 @@
 ## USAGE:
 1. Run `arcutils_extract.py` to get `musicdb_omni.xml` and `musicdb_new.xml`
 2. Run `merge-mdb.py`
-- Uncomment lines 66-69 to add " (OmniMIX)" to artist names in the merged output
+- Uncomment lines 82-85 to add " (OmniMIX)" to artist names in the merged output
 3. Run `arcutils_create.py` to repack the output `musicdb_merged.xml` or `musicdb_diff.xml` (copy to `data\gamedata\musicdb.xml` first)
 
 
